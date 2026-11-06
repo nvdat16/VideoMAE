@@ -1,0 +1,10 @@
+# Install CUDA-enabled torch separately for your server (see README).
+torch>=2.6,<2.7
+transformers==4.57.1
+accelerate>=1.10,<2
+av>=14,<17
+numpy>=1.26,<3
+pandas>=2.2,<3
+scikit-learn>=1.5,<2
+matplotlib>=3.8,<4
+safetensors>=0.4.3,<1

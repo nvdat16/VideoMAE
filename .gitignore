@@ -1,0 +1,25 @@
+# Local data and training artifacts
+Dataset/
+dataset/
+runs/
+checkpoints/
+.cache/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.tar
+*.tar.gz
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.npz
+*.log
+.env
+.env.*
+.DS_Store
