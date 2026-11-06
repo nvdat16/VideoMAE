@@ -29,6 +29,44 @@ python -m pip install -r requirements.txt
 python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 ```
 
+### NVIDIA GB10 / DGX Spark (Linux ARM64)
+
+GB10 cần bản PyTorch hỗ trợ Blackwell. Không dùng lệnh cài torch 2.6 / cu124 ở trên.
+Với Python 3.10–3.12, cài wheel CUDA 13.0 chính thức trước khi cài requirements:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install --upgrade 'torch==2.9.1' --index-url https://download.pytorch.org/whl/cu130
+python -m pip install -r requirements.txt
+python -m pip check
+python - <<'PYCODE'
+import platform
+import torch
+print("Architecture:", platform.machine())
+print("Torch:", torch.__version__, "CUDA runtime:", torch.version.cuda)
+assert torch.cuda.is_available(), "CUDA unavailable"
+print("GPU:", torch.cuda.get_device_name(0))
+print("Capability:", torch.cuda.get_device_capability(0))
+x = torch.randn(256, 256, device="cuda", requires_grad=True)
+(x @ x).square().mean().backward()
+torch.cuda.synchronize()
+print("CUDA forward/backward OK")
+PYCODE
+```
+
+`nvidia-smi` hiển thị mức CUDA driver hỗ trợ; không xác nhận phiên bản runtime
+mà PyTorch đang dùng. Kiểm tra bằng `torch.version.cuda` và phép tính CUDA ở trên.
+Bản torch 2.9.1 cu130 có [wheel Linux aarch64 chính thức](https://download.pytorch.org/whl/cu130/torch/).
+Chưa kiểm thử train CUDA trên GB10 trong môi trường phát triển này.
+
+Bắt đầu với batch nhỏ, tăng sau khi xác nhận mức dùng bộ nhớ thực tế:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python -u train.py \
+  --data-dir /path/to/Dataset --work-dir ./runs/diving48_gb10 \
+  --batch-size 2 --eval-batch-size 2 --precision bf16
+```
+
 Lần đầu cần mạng để tải checkpoint/processor công khai
 `MCG-NJU/videomae-small-finetuned-kinetics` vào Hugging Face cache.
 Dùng `HF_HOME=/path/to/cache` nếu muốn chọn nơi lưu cache.

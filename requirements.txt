@@ -1,5 +1,6 @@
-# Install CUDA-enabled torch separately for your server (see README).
-torch>=2.6,<2.7
+# Install the correct CUDA torch wheel FIRST (see README).
+# GB10 / ARM64: torch 2.9.1 from the cu130 index; do not pin to torch 2.6.
+torch>=2.6,<3
 transformers==4.57.1
 accelerate>=1.10,<2
 av>=14,<17
